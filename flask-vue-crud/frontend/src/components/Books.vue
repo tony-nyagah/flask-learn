@@ -1,3 +1,26 @@
+<script setup lang="js">
+import { ref, onMounted } from "vue";
+import axios from "axios";
+
+const books = ref([]);
+
+function getBooks() {
+    const path = 'http://localhost:5000/books';
+    axios.get(path)
+        .then((res) => {
+            books.value = res.data.books;
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+}
+
+onMounted(() => {
+    getBooks();
+})
+
+</script>
+
 <template>
     <div class="container">
         <div class="row">
@@ -16,10 +39,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>foo</td>
-                            <td>bar</td>
-                            <td>foobar</td>
+                        <tr v-for="(book, index) in books" :key="index">
+                            <td>{{ book.title }}</td>
+                            <td>{{ book.author }}</td>
+                            <td>
+                                <span v-if="book.read">Yes</span>
+                                <span v-else>No</span>
+                            </td>
                             <td>
                                 <div class="btn-group" role="group">
                                     <button type="button" class="btn btn-warning btn-sm">Update</button>
@@ -33,3 +59,5 @@
         </div>
     </div>
 </template>
+
+
